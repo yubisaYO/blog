@@ -18,12 +18,44 @@ export const getPost = (req, res) => {
     return res.status(200).json(data[0]);
   });
 };
+
 export const addPost = (req, res) => {
-  res.json("from controller");
+  const q =
+    "INSERT INTO posts(`title`, `desc`, `img`, `cat`, `date`,`uid`) VALUES (?)";
+
+  const values = [
+    req.body.title,
+    req.body.desc,
+    req.body.img,
+    req.body.cat,
+    req.body.date,
+    req.body.uid,
+  ];
+
+  console.log(req.body);
+  console.log(values);
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Post has been created");
+  });
 };
 export const deletePost = (req, res) => {
-  res.json("from controller");
+  const q = "DELETE FROM posts WHERE id=?";
+
+  db.query(q, [req.params.id], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("succesfully deleted");
+  });
 };
 export const updatePost = (req, res) => {
-  res.json("from controller");
+  const postId = req.params.id;
+  const q =
+    "UPDATE posts SET `title` = ? , `desc` = ?, `img` = ?, `cat` = ? WHERE `id` = ? ";
+  const values = [req.body.title, req.body.desc, req.body.img, req.body.cat];
+
+  console.log(values);
+  db.query(q, [...values, postId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Post has been updated");
+  });
 };
